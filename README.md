@@ -353,6 +353,204 @@ pre:hover,
 }
 ```
 
+### 混合
+
+> 混合就是将多个样式融合到一起，作为混合的样式作为属性添加到样式中  
+> 可以混合 `class` `id` 选择器的样式  
+> 混合的样式作为属性添加时，括号为可选项  
+> 当样式选择器后跟上括号`()`时，在编译输出结果中不会输出该选择器样式
+
+- 基本混合
+
+```less
+.a {
+  color: red;
+}
+
+#b(){
+  color: red;
+}
+
+.mixin-class {
+  .a;
+}
+
+.mixin-id {
+  #b();
+}
+```
+
+输出:
+
+```css
+.a {
+  color: red;
+}
+.mixin-class {
+  color: red;
+}
+.mixin-id {
+  color: red;
+}
+```
+
+- 参数传递
+
+> 参数通过 `@paramName [: default]` 指定  
+> 多个参数可以通过 逗号 `,` 、 分号 `;` 分隔  
+> 当使用了分号分割时，逗号分隔的参数将会被示为 `一组数据`，可以理解为数组参数,如：   
+> `.name(1, 2, 3; something, else)` 两个数组形式的参数  
+> `.name(1, 2, 3)` 三个数字类型的参数  
+> `.name(1, 2, 3;)` 一个数组类型的参数  
+> `.name(@param1: red, blue;)` 一个数组形式的参数，并第一个有默认值  
+
+
+```less
+.border-radius(@radius: 5px) {
+  border-radius: @radius;
+}
+
+#header {
+  .border-radius(4px);
+}
+
+.button {
+  .border-radius();
+}
+```
+
+输出:
+
+```css
+#header {
+  border-radius: 4px;
+}
+.button {
+  border-radius: 5px;
+}
+```
+
+- 混合的重载（类似 Java 概念）
+
+*所谓重载就是名字相同，参数个数不同的的混合*  
+
+> 当出现混合重载时，如果比当前混合`A`参数(n)个数多1的混合`B`(n+1)，B的第n+1个参数如果有默认值，那么会使用B这个混合
+
+```less
+.mixin(@color) {
+  color-1: @color;
+}
+.mixin(@color; @padding:2) {
+  color-2: @color;
+  padding-2: @padding;
+}
+.mixin(@color; @padding; @margin: 2) {
+  color-3: @color;
+  padding-3: @padding;
+  margin: @margin @margin @margin @margin;
+}
+.some .selector div {
+  .mixin(#008000,20px);
+}
+```
+
+输出:
+
+```css
+.some .selector div {
+  color-2: #008000;
+  padding-2: 20px;
+  color-3: #008000;
+  padding-3: 20px;
+  margin: 2 2 2 2;
+}
+```
+
+- 具名混合
+
+> 指定混合参数名称
+
+```less
+.mixin(@color: black; @margin: 10px; @padding: 20px) {
+  color: @color;
+  margin: @margin;
+  padding: @padding;
+}
+.class1 {
+  .mixin(@margin: 20px; @color: #33acfe);
+}
+.class2 {
+  .mixin(#efca44; @padding: 40px);
+}
+```
+
+输出: 
+
+```css
+.class1 {
+  color: #33acfe;
+  margin: 20px;
+  padding: 20px;
+}
+.class2 {
+  color: #efca44;
+  margin: 10px;
+  padding: 40px;
+}
+```
+
+- @arguments 变量
+
+> @arguments 代表了当前混合的所有参数，类似JS中的 arguments
+
+```less
+.box-shadow(@x: 0; @y: 0; @blur: 1px; @color: #000) {
+  box-shadow: @arguments;
+}
+.big-block {
+  .box-shadow(2px; 5px);
+}
+```
+
+输出: 
+
+```css
+.big-block {
+  box-shadow: 2px 5px 1px #000;
+}
+```
+
+- 模式匹配
+
+> `@_` 匹配所有
+
+```less
+@switch: light;
+
+.mixin(dark; @color) {
+  color: darken(@color, 10%);
+}
+.mixin(light; @color) {
+  color: lighten(@color, 10%);
+}
+.mixin(@_; @color) {
+  display: block;
+}
+
+.class {
+  .mixin(@switch; #888);
+}
+```
+
+输出:
+
+```css
+.class {
+  color: #a2a2a2;
+  display: block;
+}
+```
+
 
 
 ## 参考文档
