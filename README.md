@@ -5,6 +5,12 @@
 - [概述](#概述)
 - [变量](#变量)
 - [继承](#继承)
+- [混合](#混合)
+- [循环](#循环)
+- [合并](#合并)
+- [父选择符](#父选择符)
+- [参考文档](#参考文档)
+- [在线编辑](#在线编辑)
 
 
 ### 概述
@@ -551,7 +557,243 @@ pre:hover,
 }
 ```
 
+- 作为函数的混合
 
+混合可以作为函数使用，其中变量或属性就是返回值
+
+```less
+.mixin() {
+  @width:  100%;
+  @height: 200px;
+}
+
+.caller {
+  .mixin();
+  width:  @width;
+  height: @height;
+}
+```
+
+输出:
+
+```css
+.caller {
+  width: 100%;
+  height: 200px;
+}
+```
+
+```less
+.average(@x, @y) {
+  @average: ((@x + @y) / 2);
+}
+
+div {
+  .average(16px, 50px);
+  padding: @average;
+}
+```
+
+输出:
+
+```css
+div {
+  padding: 33px;
+}
+```
+
+- 条件混合
+
+> 所谓条件混合就是在编写过程中使用编程的方式，添加`条件控制 运算操作`等  
+> less 中没有if-else而是`when`，运算操作符有：`>` `>=` `=` `=<` `<` 以及唯一的布尔值`true`  
+> 多个when条件可以使用逗号`,` 分隔  
+
+```less
+.mixin (@a) when (lightness(@a) >= 50%) {
+  background-color: black;
+}
+.mixin (@a) when (lightness(@a) < 50%) {
+  background-color: white;
+}
+.mixin (@a) {
+  color: @a;
+}
+
+.class1 { .mixin(#ddd) }
+.class2 { .mixin(#555) }
+```
+
+输出:
+
+```css
+.class1 {
+  background-color: black;
+  color: #ddd;
+}
+.class2 {
+  background-color: white;
+  color: #555;
+}
+```
+
+*在条件值必须为true值时，一下两种书写方式等价*
+
+```less
+.truth (@a) when (@a) { ... }
+.truth (@a) when (@a = true) { ... }
+```
+
+*多个条件可以使用`and`或`逗号`隔开*
+
+```less
+.mixin (@a) when (@a > 10), (@a < -10) { ... }
+```
+
+- 常用的类型检查函数
+
+  - iscolor : 是否为颜色值
+  - isnumber : 是否为数字
+  - isstring : 是否为字符串
+  - iskeyword : 是否为关键字
+  - isurl : 是否为url
+  - ispixel : 是否为像素
+  - ispercentage : 是否为百分比
+  - isem : 是否为rem
+  - isunit : 是否为指定单位
+
+**when结构的默认值`default`**，类似if-else结构，default就是其他条件  
+
+```less
+.mixin (@a) when (@a > 0) {  }
+.mixin (@a) when (default()) {  }
+```
+
+> **not** 表示取反
+
+```less
+.m(@x) when (not(@x = true) { }
+```
+
+- CSS条件编译
+
+> 当满足给定条件时，才编译输出CSS  
+
+```less
+button when (@my-option = true) {
+  color: white;
+}
+```
+
+### 循环
+
+> less中其实没有循环的概念，取而代之的是 **递归**  
+
+```less
+.loop(@counter) when (@counter > 0) {
+  .loop((@counter - 1));
+  width: (10px * @counter);
+}
+
+div {
+  .loop(5);
+}
+```
+
+输出:
+
+```css
+div {
+  width: 10px;
+  width: 20px;
+  width: 30px;
+  width: 40px;
+  width: 50px;
+}
+```
+
+### 合并
+
+> 合并就是将多个相同属性的值，合并到一个属性,merge 对于像 background 和 transform 这类属性非常有用  
+> 而需要合并的属性使用加号`+`标示  
+
+```less
+.mixin() {
+  box-shadow+: inset 0 0 10px #555;
+}
+.myclass {
+  .mixin();
+  box-shadow+: 0 0 20px black;
+}
+```
+
+输出:
+
+```css
+.myclass {
+  box-shadow: inset 0 0 10px #555, 0 0 20px black;
+}
+```
+
+### 父选择符
+
+**父选择器就是当前作用域的所有父选择器，使用`&`表示**，其实可以看做占位替换原则
+
+```less
+a > .click {
+  color: blue;
+  
+  &:hover {
+    color: green;
+  }
+  
+  &-cancel:hover {
+  	color:grey;
+  }
+  
+  & + & {
+    color: red;
+  }
+  & > & {
+    color: red;
+  }
+  
+  && {
+    color: red;
+  }
+  
+  &ed {
+    color: red;
+  }
+}
+```
+
+输出:
+
+```css
+a > .click {
+  color: blue;
+}
+a > .click:hover {
+  color: green;
+}
+a > .click-cancel:hover {
+  color: grey;
+}
+a > .click + a > .click {
+  color: red;
+}
+a > .click > a > .click {
+  color: red;
+}
+a > .clicka > .click {
+  color: red;
+}
+a > .clicked {
+  color: red;
+}
+```
+
+*除了这些外，less还提供一些内置的工具函数，请[自行查看](http://less.bootcss.com/functions/)*
 
 ## 参考文档
 
