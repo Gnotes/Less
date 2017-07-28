@@ -559,7 +559,7 @@ pre:hover,
 
 - 作为函数的混合
 
-混合可以作为函数使用，其中变量或属性就是返回值
+混合可以作为函数使用，其中变量或属性就是返回值
 
 ```less
 .mixin() {
@@ -605,7 +605,7 @@ div {
 - 条件混合
 
 > 所谓条件混合就是在编写过程中使用编程的方式，添加`条件控制 运算操作`等  
-> less 中没有if-else而是`when`，运算操作符有：`>` `>=` `=` `=<` `<` 以及唯一的布尔值`true`  
+> less 中没有if-else而是`when`，运算操作符有：`>` `>=` `=` `=<` `<` 以及唯一的布尔值`true`  
 > 多个when条件可以使用逗号`,` 分隔  
 
 ```less
@@ -636,7 +636,7 @@ div {
 }
 ```
 
-*在条件值必须为true值时，一下两种书写方式等价*
+*在条件值必须为true值时，以下两种书写方式等价*
 
 ```less
 .truth (@a) when (@a) { ... }
@@ -661,7 +661,7 @@ div {
   - isem : 是否为rem
   - isunit : 是否为指定单位
 
-**when结构的默认值`default`**，类似if-else结构，default就是其他条件  
+**when结构的默认值`default`**，类似if-else结构，default就是其他条件  
 
 ```less
 .mixin (@a) when (@a > 0) {  }
@@ -686,7 +686,7 @@ button when (@my-option = true) {
 
 ### 循环
 
-> less中其实没有循环的概念，取而代之的是 **递归**  
+> less中其实没有循环的概念，取而代之的是 **递归**  
 
 ```less
 .loop(@counter) when (@counter > 0) {
@@ -713,7 +713,7 @@ div {
 
 ### 合并
 
-> 合并就是将多个相同属性的值，合并到一个属性,merge 对于像 background 和 transform 这类属性非常有用  
+> 合并就是将多个相同属性的值，合并到一个属性,merge 对于像 background 和 transform 这类属性非常有用  
 > 而需要合并的属性使用加号`+`标示  
 
 ```less
@@ -793,7 +793,7 @@ a > .clicked {
 }
 ```
 
-*除了这些外，less还提供一些内置的工具函数，请[自行查看](http://less.bootcss.com/functions/)*
+*除了这些外，less还提供一些内置的工具函数，请[自行查看](http://less.bootcss.com/functions/)*
 
 ## 参考文档
 
