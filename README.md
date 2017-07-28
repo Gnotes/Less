@@ -676,7 +676,7 @@ div {
 
 - CSS条件编译
 
-> 当满足给定条件时，才编译输出CSS  
+> 当满足给定条件时，才编译输出CSS  
 
 ```less
 button when (@my-option = true) {
@@ -793,7 +793,7 @@ a > .clicked {
 }
 ```
 
-*除了这些外，less还提供一些内置的工具函数，请[自行查看](http://less.bootcss.com/functions/)*
+*除了这些外，less还提供一些内置的工具函数，请[自行查看](http://less.bootcss.com/functions/)*
 
 ## 参考文档
 
